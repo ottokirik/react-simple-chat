@@ -1,22 +1,26 @@
 import { FormControl, InputLabel, OutlinedInput, InputAdornment, IconButton } from '@mui/material'
 import SendIcon from '@mui/icons-material/Send'
 import { useState } from 'react'
-import { useRecoilValue, useSetRecoilState } from 'recoil'
+import { useRecoilValue, useRecoilState } from 'recoil'
 import { activeConversationAtom, clientIdAtom, conversationsAtom } from '../state/atoms'
+import { useSocket } from '../context/socket-provider'
 
 export const MessageInput = () => {
   const [message, setMessage] = useState('')
+  const socket = useSocket()
 
   const handleChange = (event) => setMessage(event.target.value)
 
   const id = useRecoilValue(clientIdAtom)
-  const setConversations = useSetRecoilState(conversationsAtom)
+  const [conversations, setConversations] = useRecoilState(conversationsAtom)
   const conversationId = useRecoilValue(activeConversationAtom)
 
   const handleSubmit = (event) => {
     event.preventDefault()
 
     if (message.trim() === '') return
+
+    socket.emit('send-message', { recipients: conversations[conversationId].recipients, message })
 
     setConversations((prevConversations) =>
       prevConversations.reduce((acc, conversation, index) => {

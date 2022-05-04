@@ -10,7 +10,7 @@ export const ContactModal = () => {
   const openModal = useSetRecoilState(modalOpenAtom)
   const addNewContact = useSetRecoilState(contactsAtom)
 
-  const handleChange = (setter) => (event) => setter(event.target.value)
+  const handleChange = (setter) => (event) => setter(event.target.value.toLowerCase())
 
   const handleSubmit = (event) => {
     event.preventDefault()
